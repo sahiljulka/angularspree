@@ -13,8 +13,8 @@ import { Product } from './../../../core/models/product';
 export class FilterPipe implements PipeTransform {
   transform(products: Product[], selectedTaxonIds: number[]): any[] {
     const selectedIds = selectedTaxonIds;
-    if (!products) return [];
-    if (!selectedIds || selectedIds.length === 0) return products;
+    if (!products) { return []; }
+    if (!selectedIds || selectedIds.length === 0) { return products; }
     return products.filter(product => {
       let productPresent = false;
       selectedIds.forEach(id => {

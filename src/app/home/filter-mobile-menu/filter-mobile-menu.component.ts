@@ -26,7 +26,7 @@ import {
         left: -200 + 'vw'
       })),
       state('hide', style({
-        left: -100 
+        left: -100
       })),
       transition('show => hide', animate('100ms ease-out')),
       transition('hide => show', animate('200ms ease-in'))
@@ -34,12 +34,8 @@ import {
 
   ]
 })
-export class filterMobileMenuComponent implements OnInit {
+export class FilterMobileMenuComponent implements OnInit {
 
-  users = [
-    {name: "Anil Singh", qualification: ["B.Sc.", "MCA", "MCTS", "MCP"]},
-    {name: "Reena Singh", qualification: ["B A", "M A", "BTC"]}
-  ];
 
   @Input() fillterList;
   @Input() isScrolled;

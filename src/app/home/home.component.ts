@@ -8,7 +8,7 @@ import { AppState } from './../interfaces';
 import { getProducts, getTaxonomies, showAllProducts } from './../product/reducers/selectors';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Component, OnInit,ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { TemplateRef } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
@@ -32,8 +32,7 @@ export class HomeComponent implements OnInit {
   isFilterOn = false;
   isBrandOpen = false;
   isCategoryOpen = true;
-  fillterList :any;
-  
+  fillterList: any;
   constructor(
     private store: Store<AppState>,
     private actions: ProductActions,
@@ -53,26 +52,28 @@ export class HomeComponent implements OnInit {
       })
       this.store.select(getTaxonomies)
       .subscribe(data => {
-        this.fillterList = data; 
+        this.fillterList = data;
         console.log(this.fillterList);
       })
   }
 
+  // tslint:disable-next-line:member-ordering
   @ViewChild('autoShownModal') autoShownModal: ModalDirective;
-  isModalShown: boolean = false;
- 
+  // tslint:disable-next-line:member-ordering
+  isModalShown = false;
+
   showModal(): void {
     this.isModalShown = true;
   }
- 
+
   hideModal(): void {
     this.autoShownModal.hide();
   }
- 
+
   onHidden(): void {
     this.isModalShown = false;
   }
-  ngOnInit() { 
+  ngOnInit() {
     console.log(this.fillterList);
   }
 
@@ -89,10 +90,9 @@ export class HomeComponent implements OnInit {
   showAll() {
     this.isFilterOn = false
   }
-  
- isOpenChangeaccourdian()
- {
-   this.isCategoryOpen =! this.isCategoryOpen;
+
+ isOpenChangeaccourdian() {
+   this.isCategoryOpen = ! this.isCategoryOpen;
    console.log(this.isCategoryOpen);
  }
 }

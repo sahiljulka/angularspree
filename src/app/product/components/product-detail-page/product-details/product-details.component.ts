@@ -10,13 +10,11 @@ import { Store } from '@ngrx/store';
 import { CheckoutActions } from './../../../../checkout/actions/checkout.actions';
 import { Variant } from './../../../../core/models/variant';
 import { VariantRetriverService } from './../../../../core/services/variant-retriver.service';
-
 import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges } from '@angular/core';
-
 import { Product } from './../../../../core/models/product';
 import { VariantParserService } from './../../../../core/services/variant-parser.service';
 import { ProductService } from './../../../../core/services/product.service';
-import { forEach } from '@angular/router/src/utils/collection';
+import { CheckoutService } from '../../../../core/services/checkout.service';
 
 @Component({
   selector: 'app-product-details',
@@ -24,9 +22,8 @@ import { forEach } from '@angular/router/src/utils/collection';
   styleUrls: ['./product-details.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProductDetailsComponent implements OnInit, OnChanges {
+export class ProductDetailsComponent implements OnInit {
   @Input() product: Product;
-
   dynamic = 50;
   customOptionTypesHash: any;
   currentSelectedOptions = {};
@@ -47,6 +44,7 @@ export class ProductDetailsComponent implements OnInit, OnChanges {
   similarProducts$: Observable<any>;
   relatedProducts$: Observable<any>;
   reviewProducts$: Observable<any>;
+
   constructor(
     private variantParser: VariantParserService,
     private variantRetriver: VariantRetriverService,
@@ -54,7 +52,6 @@ export class ProductDetailsComponent implements OnInit, OnChanges {
     private store: Store<AppState>,
     private productService: ProductService,
     private router: Router,
-
     private toastrService: ToastrService,
     private searchActions: SearchActions,
     private productsActions: ProductActions
@@ -87,11 +84,6 @@ export class ProductDetailsComponent implements OnInit, OnChanges {
 
     this.store.dispatch(this.productsActions.getProductReviews(this.productID))
     this.reviewProducts$ = this.store.select(productReviews)
-
-
-  }
-  ngOnChanges() {
-
   }
 
   /**

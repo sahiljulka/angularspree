@@ -1,6 +1,6 @@
 import { map, tap } from 'rxjs/operators';
 import { Payment } from './../models/payment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { getOrderNumber } from './../../checkout/reducers/selectors';
 import { CheckoutActions } from './../../checkout/actions/checkout.actions';
 import { Injectable } from '@angular/core';
@@ -10,6 +10,7 @@ import { AppState } from './../../interfaces';
 import { Store } from '@ngrx/store';
 import { Order } from '../models/order';
 import { ToastrService } from 'ngx-toastr';
+import { text } from '@angular/core/src/render3/instructions';
 
 @Injectable()
 export class CheckoutService {
@@ -44,11 +45,11 @@ export class CheckoutService {
    */
   createNewLineItem(variant_id: number, quantity: number) {
     const params = {
-        line_item: { variant_id: variant_id, quantity: quantity }
-      },
+      line_item: { variant_id: variant_id, quantity: quantity }
+    },
       url = `api/v1/orders/${
         this.orderNumber
-      }/line_items?order_token=${this.getOrderToken()}`;
+        }/line_items?order_token=${this.getOrderToken()}`;
 
     return this.http.post<{ line_item: LineItem }>(url, params).pipe(
       tap(
@@ -137,7 +138,7 @@ export class CheckoutService {
   deleteLineItem(lineItem: LineItem) {
     const url = `api/v1/orders/${this.orderNumber}/line_items/${
       lineItem.id
-    }?order_token=${this.getOrderToken()}`;
+      }?order_token=${this.getOrderToken()}`;
     return this.http
       .delete(url)
       .pipe(
@@ -157,7 +158,7 @@ export class CheckoutService {
   changeOrderState() {
     const url = `api/v1/checkouts/${
       this.orderNumber
-    }/next.json?order_token=${this.getOrderToken()}`;
+      }/next.json?order_token=${this.getOrderToken()}`;
     return this.http
       .put<{ order: Order }>(url, {})
       .pipe(
@@ -178,7 +179,7 @@ export class CheckoutService {
   updateOrder(params: any) {
     const url = `api/v1/checkouts/${
       this.orderNumber
-    }.json?order_token=${this.getOrderToken()}`;
+      }.json?order_token=${this.getOrderToken()}`;
     return this.http
       .put<{ order: Order }>(url, params)
       .pipe(
@@ -198,7 +199,7 @@ export class CheckoutService {
   availablePaymentMethods() {
     const url = `api/v1/orders/${
       this.orderNumber
-    }/payments/new?order_token=${this.getOrderToken()}`;
+      }/payments/new?order_token=${this.getOrderToken()}`;
     return this.http.get<any>(url);
   }
 
@@ -214,7 +215,7 @@ export class CheckoutService {
     return this.http
       .post(
         `api/v1/orders/${
-          this.orderNumber
+        this.orderNumber
         }/payments?order_token=${this.getOrderToken()}`,
         {
           payment: {
@@ -226,6 +227,27 @@ export class CheckoutService {
       .pipe(map(_ => this.changeOrderState().subscribe()));
   }
 
+  makePayment(params: any) {
+    console.log(params)
+    const header = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+    let body = new HttpParams();
+    body = body.set('key', params.key);
+    body = body.set('txnid', params.txnid);
+    body = body.set('amount', params.amount);
+    body = body.set('productinfo', params.productinfo)
+    body = body.set('firstname', params.firstname)
+    body = body.set('email', params.email)
+    body = body.set('phone', params.phone)
+    body = body.set('surl', params.surl)
+    body = body.set('furl', params.furl)
+    body = body.set('hash', params.hash)
+
+    return this.http.post(`https://test.payu.in/_payment`,
+      body, { headers: header, responseType: 'text', observe: 'response' }
+    ).pipe(map(resp => {
+      return resp;
+    }), error => { return error })
+  }
   /**
    *
    *
